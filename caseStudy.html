@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>bau_cua</title>
+</head>
+<body>
+<h1 id="mypoint" >Point : 300</h1>
+
+<div style="width: 380px; height: 200px;margin: auto; background-color: rosybrown" >
+    <button id="to" class="button1" onmouseover="choose()" style=" font-size: 30px; width: 180px;height: 180px;background-color: rosybrown ">LỚN
+    </button>
+    <button id="be" class="button2" onmouseover="choose2()" style=" font-size: 30px; width: 180px;height: 180px;background-color: rosybrown" >NHỎ
+    </button>
+</div>
+<br>
+<input id="betpoint" type="number" placeholder="nhập point cược">
+<br>
+<h4 id="pointBet"></h4>
+<h4 id="betNumber"></h4>
+<h4 id="result"></h4>
+
+<button id="random" onclick="random()">Quay</button>
+<button id="start">start</button>
+<script>
+    function choose(){
+        document.getElementById('to').style.backgroundColor = "lightblue"
+    }
+    function choose2(){
+        document.getElementById('be').style.backgroundColor = "lightblue"
+    }
+ function random() {
+     let array = [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]];
+     let sum = 0;
+     for (let i = 0; i < array.length; i++) {
+         let x = Math.floor(Math.random() * 6);
+         let y = array[i][x];
+         sum = sum + y;
+     }
+     return sum;
+ }
+ function resultRandom(){
+        if (random()>10){
+            return "big";
+        } else {
+            return "small";
+        }
+ }
+ function quay(){
+        return resultRandom();
+    }
+    let choseNumber = "";
+    let clickedTo = false; // Trạng thái của nút "to"
+    let clickedBe = false; // Trạng thái của nút "be"
+
+    // Chọn phần tử của hai nút
+    const buttonTo = document.getElementById('to');
+    const buttonBe = document.getElementById('be');
+
+    // Gắn kết sự kiện click với nút "to"
+    buttonTo.addEventListener('click', function() {
+        if (!clickedTo) {
+            clickedTo = true; // Đảo ngược trạng thái click của nút "to"
+            updateButtonColor(buttonTo, clickedTo);// Cập nhật màu nền của nút "to"
+            clickedBe = false;
+            updateButtonColor(buttonBe,clickedBe);
+            choseNumber = 'big';
+            console.log(choseNumber);
+        }
+    });
+    // Gắn kết sự kiện click với nút "be"
+    buttonBe.addEventListener('click', function() {
+        if (!clickedBe) {
+            clickedBe = true; // Đảo ngược trạng thái click của nút "be"
+            updateButtonColor(buttonBe, clickedBe); // Cập nhật màu nền của nút "be"
+            clickedTo = false;
+            updateButtonColor(buttonTo,clickedTo);
+            choseNumber = 'small';
+            console.log(choseNumber);
+        }
+    });
+
+    // Gắn kết sự kiện mouseout với nút "to"
+    buttonTo.addEventListener('mouseout', function(event) {
+        if (!event.relatedTarget || !buttonTo.contains(event.relatedTarget)) {
+            updateButtonColor(buttonTo, clickedTo);
+        }
+    });
+
+    // Gắn kết sự kiện mouseout với nút "be"
+    buttonBe.addEventListener('mouseout', function(event) {
+        if (!event.relatedTarget || !buttonBe.contains(event.relatedTarget)) {
+            updateButtonColor(buttonBe, clickedBe);
+        }
+    });
+
+    // Hàm cập nhật màu nền của nút
+    function updateButtonColor(button, clicked) {
+        if (clicked) {
+            button.style.backgroundColor = "#ff0000"; // Màu đỏ nếu nút được click
+        } else {
+            button.style.backgroundColor = "rosybrown"; // Màu nâu hồng nếu nút không được click
+        }
+    }
+    class result {
+        constructor(betPoint,betNumber,random) {
+            this._betPoint = betPoint;
+            this._betNumber = betNumber;
+            this._random = random;
+        }
+        getCheckResutl(){
+            if(this._betNumber === this._random){
+                return true;
+            } else {
+                if (this._betNumber===undefined){
+                    return undefined;
+                } else {
+                    return false;
+                }
+            }
+        }
+        getPointThem(){
+            return this._betPoint;
+        }
+        getPointMat(){
+            return this._betPoint;
+        }
+    }
+    let x = 300;
+    function startgame() {
+       let mypointhave = x;
+        let mybetPoint = +document.getElementById("betpoint").value;
+        let gamestart = new result(mybetPoint,choseNumber,quay(),mypointhave);
+        let check = gamestart.getCheckResutl();
+        if (x<= 0){
+            alert('Bạn Đã Hết Point')
+        } else {
+            if (isNaN(mybetPoint) || mybetPoint > mypointhave||mybetPoint<0) {
+                alert('Nhập lại point cược')
+            } else {
+                if (check === true) {
+                    x += gamestart.getPointThem();
+                    document.getElementById("mypoint").innerHTML = "Point :" + x;
+                } else {
+                    if (check === false) {
+                        x -= gamestart.getPointMat();
+                        document.getElementById("mypoint").innerHTML = "Point :" + x ;
+                    } else {
+                        document.getElementById("mypoint").innerHTML = "Point :" + x;
+                    }
+                }
+            }
+
+        }
+
+    }
+    const start = document.getElementById("start") ;
+    start.addEventListener('click',startgame);
+
+
+</script>
+</body>
+</html>
